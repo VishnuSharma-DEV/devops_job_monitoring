@@ -1,70 +1,144 @@
-��� Jenkins + Ansible + Prometheus + Grafana Monitoring Stack (Docker Compose Setup)
-This repository provides a containerized DevOps monitoring environment using Docker Compose.
+# 🧩 Jenkins + Ansible + Prometheus + Grafana Monitoring Stack (Docker Compose Setup)
+
+This repository provides a **containerized DevOps monitoring environment** using **Docker Compose**.  
 It includes:
+- **Jenkins** for CI/CD pipelines  
+- **Ansible** for configuration management  
+- **Prometheus** for metrics collection  
+- **Grafana** for visualization  
+- **Node Exporter** for system metrics  
 
-Jenkins for CI/CD pipelines
-Ansible for configuration management
-Prometheus for metrics collection
-Grafana for visualization
-Node Exporter for system metrics
-���️ Folder Structure
-. ├── docker-compose.yml ├── Dockerfile.jenkins ├── Dockerfile.ansible ├── Dockerfile.prometheus ├── Jenkinsfile ├── plugins.txt ├── prometheus/ │ └── prometheus.yml ├── grafana/ │ ├── provisioning/ │ │ ├── dashboards/ │ │ │ └── dashboard.yaml │ │ └── datasources/ │ │ └── prometheus.yml │ ├── dashboards/ │ │ ├── node_exporter.json │ │ └── jenkins_metrics.json │ └── datasources/ │ └── prometheus.yaml └── ansible/ ├── playbook.yml └── inventory
 
-⚙️ Components Overview
-Service Port    Description
-Jenkins 8080    CI/CD automation server
-Jenkins Agent   50000   Agent communication port
-Ansible N/A Used for configuration & automation tasks
-Prometheus  9090    Metrics collection & monitoring
-Grafana 3000    Data visualization (Default login: admin/admin)
-Node Exporter   9100    Host system metrics exporter
-��� Setup & Run
-1️⃣ Clone the Repository
-git clone https://github.com//.git cd
+## 🗂️ Folder Structure
 
-2️⃣ Build and Start Containers docker-compose up -d --build
+.
+├── docker-compose.yml
+├── Dockerfile.jenkins
+├── Dockerfile.ansible
+├── Dockerfile.prometheus
+├── Jenkinsfile
+├── plugins.txt
+├── prometheus/
+│ └── prometheus.yml
+├── grafana/
+│ ├── provisioning/
+│ │ ├── dashboards/
+│ │ │ └── dashboard.yaml
+│ │ └── datasources/
+│ │ └── prometheus.yml
+│ ├── dashboards/
+│ │ ├── node_exporter.json
+│ │ └── jenkins_metrics.json
+│ └── datasources/
+│ └── prometheus.yaml
+└── ansible/
+├── playbook.yml
+└── inventory
 
-3️⃣ Verify Running Containers docker ps
 
-Expected running containers: jenkins, ansible, prometheus, grafana, node_exporter
+## ⚙️ Components Overview
 
-��� Jenkins Setup Access Jenkins: http://localhost:8080
+| Service        | Port  | Description |
+|----------------|-------|-------------|
+| **Jenkins**     | 8080 | CI/CD automation server |
+| **Jenkins Agent** | 50000 | Agent communication port |
+| **Ansible**     | N/A  | Used for configuration & automation tasks |
+| **Prometheus**  | 9090 | Metrics collection & monitoring |
+| **Grafana**     | 3000 | Data visualization (Default login: `admin/admin`) |
+| **Node Exporter** | 9100 | Host system metrics exporter |
 
-Initial Admin Password Execute below command docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+---
+
+## 🚀 Setup & Run
+
+### 1️⃣ Clone the Repository
+
+git clone https://github.com/VishnuSharma-DEV/devops_job_monitoring.git
+cd <your-repo-name>
+
+2️⃣ Build and Start Containers
+docker-compose up -d --build
+
+
+3️⃣ Verify Running Containers
+docker ps
+
+Expected running containers:
+jenkins, ansible, prometheus, grafana, node_exporter
+
+🧱 Jenkins Setup
+Access Jenkins
+Open: http://localhost:8080
+
+Initial Admin Password
+Get the password from inside the container:
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 Then log in to Jenkins UI → install suggested plugins.
 
-Enable Prometheus Plugin In Jenkins, go to Manage Jenkins → Manage Plugins Install Prometheus Metrics Plugin Then navigate to Manage Jenkins → Configure System → Prometheus Enable the checkbox “Enable metrics”
+Enable Prometheus Plugin
+In Jenkins, go to Manage Jenkins → Manage Plugins
+Install Prometheus Metrics Plugin
+Then navigate to Manage Jenkins → Configure System → Prometheus
+Enable the checkbox “Enable metrics”
+The endpoint will be available at:
 
-The endpoint will be available at: http://localhost:8080/prometheus
+http://localhost:8080/prometheus
 
-Access Prometheus UI: ��� http://localhost:9090
+Access Prometheus UI:
+👉 http://localhost:9090
 
-��� Grafana Configuration Grafana is pre-provisioned with:
+Access Grafana:
+👉 http://localhost:3000
 
-Prometheus as data source Dashboards for Jenkins and Node Exporter
+Default Credentials:
+Username: admin
+Password: admin
+Once logged in:
 
-Access Grafana: ��� http://localhost:3000
+Navigate to Dashboards → Manage
+Select Jenkins Metrics or Node Metrics dashboard
 
-Default Credentials: Username: admin Password: admin
+🧠 Ansible Container
+The Ansible container is available for automation testing.
 
-Once logged in: Navigate to Dashboards → Manage Select Jenkins Metrics or Node Metrics dashboard
+Connect to it:
+docker exec -it ansible bash
+Run sample playbook:
 
-��� Ansible Container The Ansible container is available for automation testing.
+ansible-playbook -i inventory playbook.yml
 
-Connect to it: docker exec -it ansible bash Run sample playbook:
+🧹 Stopping the Stack
+To stop all containers:
+docker-compose down
 
-ansible-playbook -i inventory playbook.yml ��� Stopping the Stack
+🧹To rebuild cleanly:
+docker-compose down -v --remove-orphans
+docker-compose up -d --build
 
-To stop all containers: docker-compose down
+🔒 Notes & Best Practices
+Jenkins container uses host Docker via mounted socket:
 
-To rebuild cleanly: docker-compose down -v --remove-orphans docker-compose up -d --build
+yaml
+Copy code
+- /var/run/docker.sock:/var/run/docker.sock
+This enables Jenkins to build Docker images on the host.
 
-��� Notes & Best Practices Jenkins container uses host Docker via mounted socket:
+Do not push volume data folders to GitHub (see .gitignore).
 
-/var/run/docker.sock:/var/run/docker.sock This enables Jenkins to build Docker images on the host. Do not push volume data folders to GitHub (see .gitignore). Make sure your host Docker daemon is running before starting Jenkins.
-✅ Troubleshooting Issue Possible Fix Jenkins not loading Wait 1–2 minutes after startup; it initializes plugins Prometheus not scraping Jenkins Ensure /prometheus endpoint is enabled and reachable from Prometheus Grafana dashboards empty Check if data source (Prometheus) is connected properly Port conflict Stop any other local Jenkins, Prometheus, or Grafana instances
+Make sure your host Docker daemon is running before starting Jenkins.
 
-��� License This project is open-source and can be freely used for DevOps learning and demonstration purposes.
+✅ Troubleshooting
+Issue	Possible Fix
+Jenkins not loading	Wait 1–2 minutes after startup; it initializes plugins
+Prometheus not scraping Jenkins	Ensure /prometheus endpoint is enabled and reachable from Prometheus
+Grafana dashboards empty	Check if data source (Prometheus) is connected properly
+Port conflict	Stop any other local Jenkins, Prometheus, or Grafana instances
 
-��� Author Vishnu Sharma DevOps Engineer | Automation & Monitoring Enthusiast ��� Mumbai, India
+📄 License
+This project is open-source and can be freely used for DevOps learning and demonstration purposes.
+
+🧠 Author
+Vishnu Sharma
+DevOps Engineer | Automation & Monitoring Enthusiast
+📍 Mumbai, India
