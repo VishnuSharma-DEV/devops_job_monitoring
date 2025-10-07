@@ -1,0 +1,6 @@
+FROM prom/prometheus:latest
+
+# Correct relative path to the config file
+COPY prometheus/prometheus.yml /etc/prometheus/prometheus.yml
+
+RUN echo "Custom Prometheus image built!" && cat /etc/prometheus/prometheus.yml

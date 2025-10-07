@@ -1,0 +1,24 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install system tools
+RUN apt-get update && apt-get install -y docker.io git \
+    && groupadd docker || true \
+    && usermod -aG docker jenkins
+
+# Install Jenkins plugins
+RUN jenkins-plugin-cli --plugins \
+    workflow-aggregator \
+    ansible \
+    git \
+    github \
+    prometheus \
+    blueocean \
+    credentials-binding \
+    docker-workflow \
+    pipeline-stage-view \
+    matrix-auth
+
+# Keep root for Docker socket access
+USER root

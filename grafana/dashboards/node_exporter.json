@@ -1,0 +1,25 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Sample DevOps Dashboard",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Jenkins Job Status",
+        "targets": [
+          {"expr": "up{job='jenkins'}", "refId": "A"}
+        ],
+        "datasource": "Prometheus"
+      },
+      {
+        "type": "graph",
+        "title": "Node Exporter CPU Usage",
+        "targets": [
+          {"expr": "node_cpu_seconds_total", "refId": "B"}
+        ],
+        "datasource": "Prometheus"
+      }
+    ]
+  },
+  "overwrite": true
+}

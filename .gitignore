@@ -1,0 +1,31 @@
+# Ignore Docker volumes and build data
+**/data/
+**/tmp/
+**/logs/
+**/cache/
+**/__pycache__/
+
+# Ignore Docker system files
+*.pid
+*.log
+*.swp
+
+# Ignore IDE/editor folders
+.vscode/
+.idea/
+*.iml
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore node_exporter reports or runtime data
+Node/Reports/*
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Jenkins home if ever mounted locally
+jenkins_home/
+

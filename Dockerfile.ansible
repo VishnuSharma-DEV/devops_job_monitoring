@@ -1,0 +1,10 @@
+FROM williamyeh/ansible:alpine3
+
+# Copy your playbook and inventory into the container
+COPY ansible/ /ansible/
+
+# Set working directory
+WORKDIR /ansible
+
+# Keep container running
+ENTRYPOINT ["tail", "-f", "/dev/null"]ok..
